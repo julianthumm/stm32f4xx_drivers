@@ -82,10 +82,10 @@
 //Defining a structure for GPIO register
 typedef struct
 {
-	__vo uint32_t MODER;		/*GPIO port mode register					Address offset: 0x00*/
+	__vo uint32_t MODER;	/*GPIO port mode register					Address offset: 0x00*/
 	__vo uint32_t OTYPER;	/*GPIO port output type register			Address offset: 0x04*/
 	__vo uint32_t OSPEEDR;	/*GPIO port output speed register			Address offset: 0x08*/
-	__vo uint32_t PUPDR;		/*GPIO port pull-up/pull-down register		Address offset: 0x0C*/
+	__vo uint32_t PUPDR;	/*GPIO port pull-up/pull-down register		Address offset: 0x0C*/
 	__vo uint32_t IDR;		/*GPIO port input data register				Address offset: 0x10*/
 	__vo uint32_t ODR;		/*GPIO port output data register			Address offset: 0x14*/
 	__vo uint32_t BSRR;		/*GPIO port bit set/reset register			Address offset: 0x18*/
@@ -95,11 +95,19 @@ typedef struct
 }GPIO_RegDef_t;
 
 
+/*
+ * periphal definitions (Peripheral base addresses type casted to xxx_RegDef_t)
+ */
 
-
-
-
-
+#define GPIOA	((GPIO_RegDef_t*)GPIOA_BASEADDR)
+#define GPIOB	((GPIO_RegDef_t*)GPIOB_BASEADDR)
+#define GPIOC	((GPIO_RegDef_t*)GPIOC_BASEADDR)
+#define GPIOD	((GPIO_RegDef_t*)GPIOD_BASEADDR)
+#define GPIOE	((GPIO_RegDef_t*)GPIOE_BASEADDR)
+#define GPIOF	((GPIO_RegDef_t*)GPIOF_BASEADDR)
+#define GPIOG	((GPIO_RegDef_t*)GPIOG_BASEADDR)
+#define GPIOH	((GPIO_RegDef_t*)GPIOH_BASEADDR)
+#define GPIOI	((GPIO_RegDef_t*)GPIOI_BASEADDR)
 
 
 
