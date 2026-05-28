@@ -83,16 +83,15 @@
 //Defining a structure for GPIO register
 typedef struct
 {
-	__vo uint32_t MODER;	/*GPIO port mode register					Address offset: 0x00*/
-	__vo uint32_t OTYPER;	/*GPIO port output type register			Address offset: 0x04*/
-	__vo uint32_t OSPEEDR;	/*GPIO port output speed register			Address offset: 0x08*/
-	__vo uint32_t PUPDR;	/*GPIO port pull-up/pull-down register		Address offset: 0x0C*/
-	__vo uint32_t IDR;		/*GPIO port input data register				Address offset: 0x10*/
-	__vo uint32_t ODR;		/*GPIO port output data register			Address offset: 0x14*/
-	__vo uint32_t BSRR;		/*GPIO port bit set/reset register			Address offset: 0x18*/
-	__vo uint32_t LCKR;		/*GPIO port configuration lock register		Address offset: 0x1C*/
-	__vo uint32_t AFRL;		/*GPIO alternate function low register		Address offset: 0x20*/
-	__vo uint32_t AFRH;		/*GPIO alternate function high register		Address offset: 0x24*/
+	__vo uint32_t MODER;	/*GPIO port mode register						Address offset: 0x00*/
+	__vo uint32_t OTYPER;	/*GPIO port output type register				Address offset: 0x04*/
+	__vo uint32_t OSPEEDR;	/*GPIO port output speed register				Address offset: 0x08*/
+	__vo uint32_t PUPDR;	/*GPIO port pull-up/pull-down register			Address offset: 0x0C*/
+	__vo uint32_t IDR;		/*GPIO port input data register					Address offset: 0x10*/
+	__vo uint32_t ODR;		/*GPIO port output data register				Address offset: 0x14*/
+	__vo uint32_t BSRR;		/*GPIO port bit set/reset register				Address offset: 0x18*/
+	__vo uint32_t LCKR;		/*GPIO port configuration lock register			Address offset: 0x1C*/
+	__vo uint32_t AFR[2];	/*GPIO alternate function low/high register		Address offset: 0x20 & 0x24*/
 } GPIO_RegDef_t;
 
 //Defining a structure for Reset and clock control registers
@@ -144,7 +143,7 @@ typedef struct
 #define GPIOH	((GPIO_RegDef_t*)GPIOH_BASEADDR)
 #define GPIOI	((GPIO_RegDef_t*)GPIOI_BASEADDR)
 
-#define RCC ((RCC_Reg_def_t*)RCC_BASEADDR)
+#define RCC ((RCC_Reg_Def_t*)RCC_BASEADDR)
 
 /*
  * Clock enable macros for GPIOx peripherals
@@ -237,5 +236,52 @@ typedef struct
  * Clock disable macros for SYSCFG peripherals
  */
 #define SYSCFG_PCLK_DI()		(RCC->APB2ENR &= ~(1 << 14))
+
+/*
+ * Macros to reset GPIOx peripherals
+ * We will set 1 for resetting and then turn it back to 0
+ * We use a do while loop in macro to call 2 statements in one macro
+ */
+#define GPIOA_REG_RESET()		do{ (RCC->AHB1RSTR |= (1 << 0));	(RCC->AHB1RSTR &= ~(1 << 0)); } while(0)
+#define GPIOB_REG_RESET()		do{ (RCC->AHB1RSTR |= (1 << 1));	(RCC->AHB1RSTR &= ~(1 << 1)); } while(0)
+#define GPIOC_REG_RESET()		do{ (RCC->AHB1RSTR |= (1 << 2));	(RCC->AHB1RSTR &= ~(1 << 2)); } while(0)
+#define GPIOD_REG_RESET()		do{ (RCC->AHB1RSTR |= (1 << 3));	(RCC->AHB1RSTR &= ~(1 << 3)); } while(0)
+#define GPIOE_REG_RESET()		do{ (RCC->AHB1RSTR |= (1 << 4));	(RCC->AHB1RSTR &= ~(1 << 4)); } while(0)
+#define GPIOF_REG_RESET()		do{ (RCC->AHB1RSTR |= (1 << 5));	(RCC->AHB1RSTR &= ~(1 << 5)); } while(0)
+#define GPIOG_REG_RESET()		do{ (RCC->AHB1RSTR |= (1 << 6));	(RCC->AHB1RSTR &= ~(1 << 6)); } while(0)
+#define GPIOH_REG_RESET()		do{ (RCC->AHB1RSTR |= (1 << 7));	(RCC->AHB1RSTR &= ~(1 << 7)); } while(0)
+#define GPIOI_REG_RESET()		do{ (RCC->AHB1RSTR |= (1 << 8));	(RCC->AHB1RSTR &= ~(1 << 8)); } while(0)
+
+//Some generic macros
+#define ENABLE 			1
+#define DISABLE 		0
+#define SET 			ENABLE
+#define RESET 			DISABLE
+#define GPIO_PIN_SET	SET
+#define GPIO_PIN_RESET	RESET
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #endif /* INC_STM32F407XX_H_ */
