@@ -205,7 +205,12 @@ void GPIO_DeInit(GPIO_RegDef_t *pGPIOx)
  */
 uint8_t GPIO_ReadFromInputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber)
 {
+	uint8_t value;
+	//Here we push the provided pin number, from the user, to the right (first bit position)
+	//With & 0x00000001 we want to get the current bit status if 0 or 1
+	value = (uint8_t)((pGPIOx->IDR >> PinNumber) & 0x00000001);
 
+	return value;
 }
 
 /********************************************************************************************
@@ -221,7 +226,11 @@ uint8_t GPIO_ReadFromInputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber)
  */
 uint16_t GPIO_ReadFromInputPort(GPIO_RegDef_t *pGPIOx)
 {
+	uint16_t value;
 
+	value = (uint16_t)pGPIOx->IDR;
+
+	return value;
 }
 
 /********************************************************************************************
@@ -242,7 +251,13 @@ uint16_t GPIO_ReadFromInputPort(GPIO_RegDef_t *pGPIOx)
  */
 void GPIO_WriteToOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber, uint8_t Value)
 {
-
+	if (Value == GPIO_PIN_SET) {
+		//write 1 to the output data register at the bit field corresponding to the pin number
+		pGPIOx->ODR |= (1 << PinNumber);
+	} else {
+		//write 0
+		pGPIOx->ODR &= ~(1 << PinNumber);
+	}
 }
 
 /********************************************************************************************
@@ -260,14 +275,14 @@ void GPIO_WriteToOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber, uint8_t Val
  */
 void GPIO_WriteToOutputPort(GPIO_RegDef_t *pGPIOx, uint16_t Value)
 {
-
+	pGPIOx->ODR = Value;
 }
 
 /********************************************************************************************
  * @fn						- GPIO_ToggleOutputPin
  *
  * @brief					- Toggles the digital logic state of a specific output pin on a given
- * 							  GPIO port.
+ * 							  GPIO port (HIGH/LOW).
  *
  * @param[in]				- pGPIOx: Base address of the GPIO peripheral port (e.g., GPIOA, GPIOB).
  * @param[in]				- PinNumber: The specific pin number to toggle (0 to 15).
@@ -279,7 +294,19 @@ void GPIO_WriteToOutputPort(GPIO_RegDef_t *pGPIOx, uint16_t Value)
  */
 void GPIO_ToggleOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber)
 {
-
+	//xor operator only accepts one true value
+	//Current status (ODR):    1   0   1   0  (LED 3 is ON, LED 2 is OFF...)
+	//XOR-mask (^):            0   1   0   0  (Command: "Only change the second position!")
+	//-----------------------------------------
+	//New value:           	   1   1   1   0
+	//
+	//Other example
+	//
+	//Current status (ODR):    1   1   1   0  (LED 3 is ON, LED 2 is OFF...)
+	//XOR-mask (^):            0   1   0   0  (Command: "Only change the second position!")
+	//-----------------------------------------
+	//New value:               1   0   1   0
+	pGPIOx->ODR ^= (1 << PinNumber);
 }
 
 
