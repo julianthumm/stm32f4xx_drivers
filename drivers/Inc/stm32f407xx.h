@@ -268,8 +268,8 @@ typedef struct
 
 
 
-
-
+//Include the gpio driver header file here so we do not need to include this header in the main.c file
+#include "stm32f407xx_gpio_driver.h"
 
 
 
