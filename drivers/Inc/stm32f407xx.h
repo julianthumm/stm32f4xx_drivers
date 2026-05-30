@@ -12,6 +12,29 @@
 
 #define __vo	volatile
 
+/******************************************START:Processor specific details***********************************************************/
+/*
+ * ARM Cortex Mx Processor NVIC ISERx register Addresses
+ */
+#define NVIC_ISER0					((__vo uint32_t*)0xE000E100)
+#define NVIC_ISER1					((__vo uint32_t*)0xE000E104)
+#define NVIC_ISER2					((__vo uint32_t*)0xE000E108)
+#define NVIC_ISER3					((__vo uint32_t*)0xE000E10C)
+
+/*
+ * ARM Cortex Mx Processor NVIC ICERx register Addresses
+ */
+#define NVIC_ICER0					((__vo uint32_t*)0xE000E180)
+#define NVIC_ICER1					((__vo uint32_t*)0xE000E184)
+#define NVIC_ICER2					((__vo uint32_t*)0xE000E188)
+#define NVIC_ICER3					((__vo uint32_t*)0xE000E18C)
+
+/*
+ * ARM Cortex Mx Processor Priority Register Address Calculation
+ */
+#define NVIC_PR_BASE_ADDR			((__vo uint32_t*)0xE000400)
+
+#define NO_PR_BITS_IMPLEMENTED		4
 /*
  * base addresses of flash and SRAM memories
  */
@@ -130,6 +153,33 @@ typedef struct
 } RCC_Reg_Def_t;
 
 /*
+ * peripheral register definition structure for SYSCFG
+ */
+typedef struct
+{
+	__vo uint32_t MEMRMP;		/*				Address offset: 0x00*/
+	__vo uint32_t PMC;			/*				Address offset: 0x04*/
+	__vo uint32_t EXTICR[4];	/*				Address offset: 0x08 - 0x14*/
+	__vo uint32_t CMPCR;		/*				Address offset: 0x20*/
+} SYSCFG_RegDef_t;
+
+
+/*
+ * peripheral register definition structure for EXTI
+ */
+typedef struct
+{
+	__vo uint32_t IMR;		/*					Address offset: 0x00*/
+	__vo uint32_t EMR;		/*					Address offset: 0x04*/
+	__vo uint32_t RTSR;		/*					Address offset: 0x08*/
+	__vo uint32_t FTSR;		/*					Address offset: 0x0C*/
+	__vo uint32_t SWIER;	/*					Address offset: 0x10*/
+	__vo uint32_t PR;		/*					Address offset: 0x14*/
+} EXTI_RegDef_t;
+
+
+
+/*
  * peripheral definitions (Peripheral base addresses type casted to xxx_RegDef_t)
  */
 
@@ -143,7 +193,11 @@ typedef struct
 #define GPIOH	((GPIO_RegDef_t*)GPIOH_BASEADDR)
 #define GPIOI	((GPIO_RegDef_t*)GPIOI_BASEADDR)
 
-#define RCC ((RCC_Reg_Def_t*)RCC_BASEADDR)
+#define RCC 	((RCC_Reg_Def_t*)RCC_BASEADDR)
+
+#define EXTI 	((EXTI_RegDef_t*)EXTI_BASEADDR)
+
+#define SYSCFG 	((SYSCFG_RegDef_t*)SYSCFG_BASEADDR)
 
 /*
  * Clock enable macros for GPIOx peripherals
@@ -251,6 +305,32 @@ typedef struct
 #define GPIOG_REG_RESET()		do{ (RCC->AHB1RSTR |= (1 << 6));	(RCC->AHB1RSTR &= ~(1 << 6)); } while(0)
 #define GPIOH_REG_RESET()		do{ (RCC->AHB1RSTR |= (1 << 7));	(RCC->AHB1RSTR &= ~(1 << 7)); } while(0)
 #define GPIOI_REG_RESET()		do{ (RCC->AHB1RSTR |= (1 << 8));	(RCC->AHB1RSTR &= ~(1 << 8)); } while(0)
+
+
+/*
+ * returns port code for given GPIOx base address
+ */
+#define GPIO_BASEADDR_TO_CODE(x) 	((x == GPIOA) ? 0 :\
+									(x == GPIOB) ? 1 :\
+									(x == GPIOC) ? 2 :\
+									(x == GPIOE) ? 3 :\
+									(x == GPIOF) ? 4 :\
+									(x == GPIOG) ? 5 :\
+									(x == GPIOH) ? 6 :\
+									(x == GPIOI) ? 7 :0)
+
+
+/*
+ * IRQ (Interrupt Request) Number of STM32F407x MCU
+ */
+#define IRQ_NO_EXTI0				6
+#define IRQ_NO_EXTI1				7
+#define IRQ_NO_EXTI2				8
+#define IRQ_NO_EXTI3				9
+#define IRQ_NO_EXTI4				10
+#define IRQ_NO_EXTI9_5				23
+#define IRQ_NO_EXTI15_10			40
+
 
 //Some generic macros
 #define ENABLE 			1
